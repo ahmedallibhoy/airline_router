@@ -5,6 +5,7 @@ from scipy.stats import rv_continuous
 from random import randint
 import numpy as np
 import matplotlib.pyplot as plt
+import networkx as nx
 
 from spatial_network import PlaneNode, SpatialNetwork
 
@@ -25,14 +26,14 @@ def random_pdf(offset=None, rscale=.1, sscale=.001):
 
 def random_map(num_metro=None):
     if num_metro is None:
-        num_metro = randint(1, 5)
+        num_metro = 2
 
     metro_centers = [1 - 2 * random.random(2) for i in range(num_metro)]
     rpdf= [random_pdf(mloc, sscale=.01, rscale=0.3) for i in range(randint(5, 7)) for mloc in metro_centers]
     metros = [r[0] for r in rpdf]
 
     rpts = [r[1] for r in rpdf if -1.0 < r[1][0] < 1.0 and -1 < r[1][1] < 1.0]
-    upts = (1 - 2 * np.random.random((10, 2))).tolist()
+    upts = (1 - 2 * np.random.random((5, 2))).tolist()
     pts = np.array(rpts + upts)
 
     C = 1.0 / len(metros)
@@ -53,19 +54,11 @@ if __name__ == "__main__":
         plt.contourf(x, y, z)
         plt.colorbar()
 
-        plt.scatter([n.pos[0] for n in nodelist], [n.pos[1] for n in nodelist], s=.1, c='k')
-        plt.show()
+        plt.scatter([n.pos[0] for n in nodelist], [n.pos[1] for n in nodelist], s=10, c='k')
 
         network = SpatialNetwork(nodelist)
-        print len(nodelist)
-
-        edge_list = np.array([1.0  if i % network.num_nodes -1 != 0 else 0.0
-                              for i in range(network.num_nodes * network.num_nodes)])
-        edge_mat = edge_list.reshape((network.num_nodes, network.num_nodes))
-
-        print network.get_cost(edge_mat)
-
         network.optimize_network()
+        network.draw_network()
 
 
 

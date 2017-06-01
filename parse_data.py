@@ -85,6 +85,8 @@ if __name__ == "__main__":
     data = parse_airports()
     data = parse_routes(data)
 
+    print len(data.keys())
+
     print "LAX Ranking: ",          data[3484][5]
     print "Burbank Ranking: ",      data[3644][5]
     print "JFK Ranking: ",          data[3797][5]
